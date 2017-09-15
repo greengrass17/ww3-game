@@ -19,7 +19,6 @@
   "homepage": "https://github.com/greengrass17/ww3-game#readme",
   "devDependencies": {
     "autobind-decorator": "^2.1.0",
-    "autoprefixer": "^7.1.4",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.0",
     "babel-jest": "^21.0.2",
@@ -40,9 +39,11 @@
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
+    "google-maps-react": "^1.1.0",
     "material-ui": "^0.19.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
+    "underscore": "^1.8.3",
     "whatwg-fetch": "^2.0.3"
   },
   "babel": {

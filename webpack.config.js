@@ -5,9 +5,6 @@ const webpack = require('webpack');
 
 module.exports = {
     devtool: 'inline-source-map',
-    devServer: {
-        https: true
-    },
     entry: [
         'babel-polyfill',
         'whatwg-fetch',
