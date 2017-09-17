@@ -1,59 +1,127 @@
 import React from 'react';
-import { GoogleApiWrapper } from 'google-maps-react';
+import { GoogleApiWrapper, Map, Marker } from 'google-maps-react';
 import autobind from 'autobind-decorator';
-import { set } from 'services/utils';
+import * as _ from 'underscore';
+import 'whatwg-fetch';
 
 class MapContainer extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
-            root: {
-                lat: 0,
-                lng: 0
-            },
-            target: {
-                lat: 0,
-                lng: 0
-            }
+            distance: 0,
+            target: {},
+            root: {}
         };
     }
 
     render () {
         return (
-            <form onSubmit={this.calcDistance}>
-                <div>
-                    <input type="number" id="root.lat" value={this.state.root.lat} onChange={this.handleInputChange} />
-                    <input type="number" id="root.lng" value={this.state.root.lng} onChange={this.handleInputChange} />
-                </div>
-                <div>
-                    <input type="number" id="target.lat" value={this.state.target.lat} onChange={this.handleInputChange} />
-                    <input type="number" id="target.lng" value={this.state.target.lng} onChange={this.handleInputChange} />
-                </div>
-                <label>{this.state.distance}</label>
-                <button>Get distance</button>
-            </form>
+            <div>
+                <Map
+                    google={this.props.google}
+                    onClick={this.onClick}
+                    zoom={3}
+                    maxZoom={3}
+                    minZoom={3}
+                    ref={node => {
+                        this.map = node;
+                    }}
+                >
+                    {!_.isEmpty(this.state.root) &&
+                    this.props.google &&
+                    <Marker
+                        position={this.state.root}
+                    />}
+                    {!_.isEmpty(this.state.target) &&
+                    this.props.google &&
+                    <Marker
+                        position={this.state.target}
+                    />}
+                </Map>
+            </div>
         );
     }
 
-    @autobind
-    handleInputChange (event) {
-        const state = this.state;
-        set(state, event.target.id, event.target.value);
-        this.setState(state);
+    getLocation (latLng) {
+        const geocoder = this.props.google.maps.Geocoder;
+        geocoder.prototype.geocode({
+            location: {
+                lat: latLng.lat(),
+                lng: latLng.lng()
+            }
+        }, (results, status) => {
+            if (status === 'OK') {
+                const country = _.find(results, result => {
+                    return _.find(result.types, type => type === 'country');
+                });
+                if (country) {
+                    const isoCode = country.address_components[0].short_name;
+                    const getLatLng = (place) => {
+                        const lat = place.geometry.location.lat();
+                        const lng = place.geometry.location.lng();
+                        return {
+                            lat,
+                            lng
+                        };
+                    };
+                    fetch('https://restcountries.eu/rest/v2/alpha/' + isoCode)
+                    .then(response => response.json())
+                    .then(data => {
+                        geocoder.prototype.geocode({
+                            address: data.capital
+                        }, ([result], status) => {
+                            if (status === 'OK') {
+                                const position = getLatLng(result);
+                                if (_.isEmpty(this.state.root) && _.isEmpty(this.state.target)) {
+                                    this.setState({ root: position });
+                                } else if (_.isEmpty(this.target)) {
+                                    this.setState({ target: position });
+                                }
+                                if (!_.isEmpty(this.state.root) && !_.isEmpty(this.state.target)) {
+                                    const maps = this.props.google.maps;
+                                    const rootLatLng = new maps.LatLng(this.state.root.lat, this.state.root.lng);
+                                    const targetLatLng = new maps.LatLng(this.state.target.lat, this.state.target.lng);
+                                    const distance = this.calcDistance(rootLatLng, targetLatLng);
+                                    this.setState({ distance });
+                                    const coordinates = [
+                                        this.state.root,
+                                        this.state.target
+                                    ];
+                                    this.line = new maps.Polyline({
+                                        path: coordinates,
+                                        geodesic: true,
+                                        strokeColor: '#000000',
+                                        strokeOpacity: 0.7,
+                                        strokeWeight: 3
+                                    });
+                                    this.line.setMap(this.map.map);
+                                }
+                            }
+                        });
+                    });
+                }
+            }
+        });
     }
 
     @autobind
-    calcDistance (event) {
-        event.preventDefault();
-        const gMap = this.props.google.maps;
-        const root = new gMap.LatLng(+this.state.root.lat, +this.state.root.lng);
-        const target = new gMap.LatLng(+this.state.target.lat, +this.state.target.lng);
-        const distance = (gMap.geometry.spherical.computeDistanceBetween(root, target) / 1000).toFixed(2);
-        this.setState({ distance });
+    onClick (props, map, event) {
+        event.stop();
+        if (!_.isEmpty(this.state.root) && !_.isEmpty(this.state.target)) {
+            this.setState({ root: {} });
+            this.setState({ target: {} });
+            this.line.setMap(null);
+        }
+        this.getLocation(event.latLng);
+    }
+
+    calcDistance (point1, point2) {
+        const { google } = this.props;
+        return (google.maps.geometry.spherical.computeDistanceBetween(point1, point2) / 1000).toFixed(2);
     }
 }
 
 export default GoogleApiWrapper({
     apiKey: 'AIzaSyBYB1G3Kc7XlOvlWN_v5SC7mYJcCSZgKtY',
-    libraries: ['geometry']
+    libraries: ['geometry', 'places']
 })(MapContainer);
