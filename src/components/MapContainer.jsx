@@ -5,6 +5,7 @@ import * as _ from 'underscore';
 import 'whatwg-fetch';
 
 import Polyline from './Polyline.jsx';
+import FusionTablesLayer from './FusionTablesLayer.jsx';
 
 class MapContainer extends React.Component {
     constructor (props) {
@@ -50,6 +51,26 @@ class MapContainer extends React.Component {
                         strokeOpacity={0.7}
                         strokeWeight={3}
                     />}
+                    <FusionTablesLayer
+                        query={{
+                            select: 'geometry',
+                            from: '1N2LBk4JHwWpOY4d9fobIn27lfnZ5MDy-NoqqRpk',
+                            where: "ISO_2DIGIT IN ('US', 'GB', 'DE')"
+                        }}
+                        styles={[{
+                            polygonOptions: {
+                                fillColor: '#FF0000',
+                                fillOpacity: 0.3
+                            }
+                        }, {
+                            where: "ISO_2DIGIT IN ('US')",
+                            polygonOptions: {
+                                fillColor: '#0000FF',
+                                fillOpacity: 0.2
+                            }
+                        }]}
+                        suppressInfoWindows={true}
+                    />
                 </Map>
             </div>
         );
