@@ -7,7 +7,7 @@ class App extends React.Component {
         return (
             <MuiThemeProvider>
                 <div>
-                    <p>This WWIII game that I cannot get out of my head</p>
+                    <h2>This WWIII game that I cannot get out of my head</h2>
                     <MapContainer />
                 </div>
             </MuiThemeProvider>
