@@ -6,3 +6,7 @@ script:
 cache:
   directories:
     - "node_modules"
+notification:
+  email:
+    on_success: never
+    on_failure: always

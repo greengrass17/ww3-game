@@ -9,20 +9,21 @@ class FusionTablesLayer extends React.Component {
         this.renderLayer();
     }
 
-    componentDidUpdate (prevProps) {
-        if (this.props.map !== prevProps.map) {
+    componentDidUpdate () {
+        if (this.props.map) {
             this.renderLayer();
         }
     }
 
-    renderLayer () {
+    renderLayer (props) {
         const {
             google,
             map,
             query,
             styles,
+            clickable,
             suppressInfoWindows
-        } = this.props;
+        } = props || this.props;
 
         if (!google) {
             return null;
@@ -32,8 +33,14 @@ class FusionTablesLayer extends React.Component {
             map,
             query,
             styles,
+            clickable,
             suppressInfoWindows
         };
+
+        if (this.layer) {
+            this.layer.setOptions(params);
+            return;
+        }
 
         this.layer = new google.maps.FusionTablesLayer(params);
     }
