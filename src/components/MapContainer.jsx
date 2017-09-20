@@ -9,6 +9,10 @@ import DistanceCalc from './DistanceCalc.jsx';
 import ButtonBar from './ButtonBar.jsx';
 import HighlightLayer from './HighlightLayer.jsx';
 
+const style = {
+    margin: 12
+};
+
 class MapContainer extends React.Component {
     constructor (props) {
         super(props);
@@ -21,9 +25,6 @@ class MapContainer extends React.Component {
 
     render () {
         const center = this.props.google ? new this.props.google.maps.LatLng(30, 0) : null;
-        const style = {
-            margin: 12
-        };
         return (
             <div>
                 <ButtonBar onActiveChange={this.onActiveButtonChange}>
