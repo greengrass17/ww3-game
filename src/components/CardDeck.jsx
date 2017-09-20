@@ -1,8 +1,8 @@
 import React from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 import autobind from 'autobind-decorator';
+import PropTypes from 'prop-types';
 
-import CountryCard from './CountryCard.jsx';
 import { getRandom } from 'services/countries';
 
 const style = {
@@ -10,19 +10,10 @@ const style = {
 };
 
 class CardDeck extends React.Component {
-    constructor (props) {
-        super(props);
-        this.state = { country: {} };
-    }
-
     render () {
         return (
             <div>
-                <CountryCard
-                    country={this.state.country}
-                    resetCountry={this.resetCountry}
-                />
-                <RaisedButton
+                <FlatButton
                     style={style}
                     primary={true}
                     label="Random a country"
@@ -35,14 +26,43 @@ class CardDeck extends React.Component {
     @autobind
     randomCountry () {
         getRandom(1).then(([country]) => {
-            this.setState({ country });
+            this.context.showCard({
+                title: country.Name,
+                text: this.renderCountryInfo(country)
+            });
         });
     }
 
-    @autobind
-    resetCountry () {
-        this.setState({ country: {} });
+    renderCountryInfo (country) {
+        const {
+            HumanPopulation,
+            Ranking,
+            NaturalResource,
+            Technology,
+            Military,
+            Morale,
+            Logistic,
+            ScaleOfBattle,
+            BattlePrice
+        } = country;
+        return (
+            <div>
+                <div style={style}>Human Population: {HumanPopulation}</div>
+                <div style={style}>Ranking: {Ranking}</div>
+                <div style={style}>Natural Resource: {NaturalResource}</div>
+                <div style={style}>Technology: {Technology}</div>
+                <div style={style}>Military: {Military}</div>
+                <div style={style}>Morale: {Morale}</div>
+                <div style={style}>Logistic: {Logistic}</div>
+                <div style={style}>Scale Of Battle: {ScaleOfBattle}</div>
+                <div style={style}>Battle Price: {BattlePrice}</div>
+            </div>
+        );
     }
 }
+
+CardDeck.contextTypes = {
+    showCard: PropTypes.func
+};
 
 export default CardDeck;

@@ -4,7 +4,7 @@ import FlatButton from 'material-ui/FlatButton';
 import autobind from 'autobind-decorator';
 
 const cardStyle = {
-    position: 'absolute',
+    position: 'fixed',
     width: '50%',
     left: '50%',
     top: '50%',
