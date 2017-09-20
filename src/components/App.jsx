@@ -1,8 +1,10 @@
 import React from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import MapContainer from './MapContainer.jsx';
+import AppBar from 'material-ui/AppBar';
+import autobind from 'autobind-decorator';
 
-import CardDeck from './CardDeck.jsx';
+import MapContainer from './MapContainer.jsx';
+import Popup from './Popup.jsx';
 
 const style = {
     fontFamily: 'Roboto',
@@ -10,16 +12,36 @@ const style = {
 };
 
 class App extends React.Component {
+    constructor (props) {
+        super(props);
+        this.state = { isMenuOpened: true };
+    }
+
     render () {
         return (
             <MuiThemeProvider>
-                <div style={style}>
-                    <h2>This WWIII game that I cannot get out of my head</h2>
-                    <CardDeck />
-                    <MapContainer />
-                </div>
+                <Popup style={style}>
+                    <AppBar
+                        title="This Stupid WWIII Game (TM)"
+                        onLeftIconButtonTouchTap={this.toggleMenu}
+                        onTitleTouchTap={this.toggleMenu}
+                        zDepth={0}
+                        style={{
+                            position: 'fixed'
+                        }}
+                    />
+                    <MapContainer
+                        isMenuOpened={this.state.isMenuOpened}
+                        toggleMenu={this.toggleMenu}
+                    />
+                </Popup>
             </MuiThemeProvider>
         );
+    }
+
+    @autobind
+    toggleMenu () {
+        this.setState({ isMenuOpened: !this.state.isMenuOpened });
     }
 }
 
