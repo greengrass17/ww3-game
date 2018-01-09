@@ -32,7 +32,6 @@ module.exports = {
           options: {
             presets: ['react', 'es2015'],
             plugins: [
-              'transform-decorators-legacy',
               'transform-object-rest-spread',
               'transform-class-properties',
               ["module-resolver", {

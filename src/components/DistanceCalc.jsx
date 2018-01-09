@@ -1,23 +1,10 @@
-// @flow
 import React from 'react';
 import { Marker } from 'google-maps-react';
 
 import { isEmpty } from 'services/utils';
 import Polyline from './Polyline.jsx';
 
-type Props = {
-  google: Object
-}
-
-type State = {
-  root: Object,
-  target: Object,
-  path: Array<Object>,
-  distance: number
-}
-
-class DistanceCalc extends React.Component<Props, State> {
-  midPointMarker: ?HTMLElement;
+class DistanceCalc extends React.Component {
   state = {
     root: {},
     target: {},
@@ -67,7 +54,7 @@ class DistanceCalc extends React.Component<Props, State> {
     );
   }
 
-  onMapClick = (props : Object, map : Object, event : Object) => {
+  onMapClick = (props, map, event) => {
     if (!isEmpty(this.state.root) && !isEmpty(this.state.target)) {
       this.setState({
         root: {},
@@ -76,7 +63,7 @@ class DistanceCalc extends React.Component<Props, State> {
       });
     }
     this.getLocation(event.latLng).then(location => {
-      const state: State = { ...this.state };
+      const state = { ...this.state };
       if (isEmpty(state.root) && isEmpty(state.target)) {
         state.root = location;
       } else if (isEmpty(state.target)) {
@@ -95,8 +82,8 @@ class DistanceCalc extends React.Component<Props, State> {
     });
   }
 
-  getLocation (latLng) : Promise<*> {
-    const wrappedGeocodePromise = (config: Object) : Promise<*> => {
+  getLocation (latLng) {
+    const wrappedGeocodePromise = (config) => {
       return new Promise((resolve, reject) => {
         const geocode = this.props.google.maps.Geocoder.prototype.geocode;
         geocode(config, (results, status) => {
@@ -148,7 +135,7 @@ class DistanceCalc extends React.Component<Props, State> {
     });
   }
 
-  calcDistance (point1, point2): number {
+  calcDistance (point1, point2) {
     const { google } = this.props;
     if (typeof point1.lat === 'number' && typeof point1.lng === 'number') {
       point1 = new google.maps.LatLng(point1.lat, point1.lng);

@@ -1,17 +1,8 @@
-// @flow
 import React from 'react';
 
 import FusionTablesLayer from './FusionTablesLayer.jsx';
 
-type Props = {
-  google: Object
-}
-
-type State = {
-  teams: Array<Object>
-}
-
-class HighlightLayer extends React.Component<Props, State> {
+class HighlightLayer extends React.Component {
   state = {
     teams: [
       {

@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { GoogleApiWrapper, Map } from 'google-maps-react';
 import Checkbox from 'material-ui/Checkbox';
@@ -19,16 +18,7 @@ const style = {
   marginBottom: 12
 };
 
-type Props = {
-  google: Object,
-  isMenuOpened: boolean,
-  toggleMenu: Function
-}
-
-class MapContainer extends React.Component<Props> {
-  distanceCalc: ?DistanceCalc;
-  highlightLayer: ?HighlightLayer;
-
+class MapContainer extends React.Component {
   isDistanceCalcEnabled = false;
   teamSelected = 0;
 
