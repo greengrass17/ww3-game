@@ -7,3 +7,4 @@
 *.sw*
 node_modules/
 build/
+.npmrc
