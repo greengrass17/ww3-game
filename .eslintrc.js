@@ -15,9 +15,12 @@ module.exports = {
     "sourceType": "module"
   },
   "plugins": [
+    "flowtype",
     "react"
   ],
   "rules": {
+    "flowtype/define-flow-type": 1,
+    "flowtype/use-flow-type": 1,
     "accessor-pairs": "error",
     "array-bracket-spacing": [
       "error",
