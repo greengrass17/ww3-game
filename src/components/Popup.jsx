@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 const cardStyle = {
   position: 'fixed',
-  width: '50%',
+  width: '65%',
   left: '50%',
   top: '50%',
   zIndex: 5,

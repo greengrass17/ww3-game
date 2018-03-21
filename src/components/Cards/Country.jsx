@@ -9,11 +9,8 @@ class CountryCard extends React.Component {
     const {
       Total,
       HumanPopulation,
-      Ranking,
-      NaturalResource,
-      Technology,
+      NaturalResources,
       Military,
-      Morale,
       Logistic,
       ScaleOfBattle,
       BattlePrice
@@ -22,11 +19,8 @@ class CountryCard extends React.Component {
       <div>
         <div style={style}>Total: {Total}</div>
         <div style={style}>Human Population: {HumanPopulation}</div>
-        <div style={style}>Ranking: {Ranking}</div>
-        <div style={style}>Natural Resource: {NaturalResource}</div>
-        <div style={style}>Technology: {Technology}</div>
+        <div style={style}>Natural Resources: {NaturalResources}</div>
         <div style={style}>Military: {Military}</div>
-        <div style={style}>Morale: {Morale}</div>
         <div style={style}>Logistic: {Logistic}</div>
         <div style={style}>Scale Of Battle: {ScaleOfBattle}</div>
         <div style={style}>Battle Price: {BattlePrice}</div>
