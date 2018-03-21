@@ -1,10 +1,15 @@
 import { get } from './http';
 
+const baseUrl = '/country';
+
 export const getRandomHq = () => {
-  return get('/hqs/r');
+  return get(`${baseUrl}/?specials=HQ&ipp=1`);
+};
+
+export const getRandomAllies = () => {
+  return get(`${baseUrl}/?specials=Ally&ipp=5`);
 };
 
 export const search = (keyword) => {
-  console.log(keyword);
-  return get(`/?q=${keyword}`);
+  return get(`${baseUrl}/search?keyword=${keyword}&field=Name`);
 };
