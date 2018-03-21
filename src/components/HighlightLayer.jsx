@@ -7,20 +7,27 @@ class HighlightLayer extends React.Component {
     teams: [
       {
         name: 'Team 1',
-        countries: ['DE'],
-        fillColor: '#FF0000',
-        fillOpacity: 0.2
+        hq: 'Germany',
+        allies: [],
+        polygonOptions: {
+          fillColor: '#FF0000',
+          fillOpacity: 0.2
+        }
       },
       {
         name: 'Team 2',
-        countries: ['US'],
-        fillColor: '#0000FF',
-        fillOpacity: 0.2
+        hq: 'United States',
+        allies: [],
+        polygonOptions: {
+          fillColor: '#0000FF',
+          fillOpacity: 0.2
+        }
       }
     ]
   }
 
   render () {
+    const allCountries = this.getCountriesInTeam(0).concat(this.getCountriesInTeam(1));
     return (
       <div>
         <FusionTablesLayer
@@ -28,19 +35,13 @@ class HighlightLayer extends React.Component {
           query={{
             select: 'geometry',
             from: '1N2LBk4JHwWpOY4d9fobIn27lfnZ5MDy-NoqqRpk',
-            where: `ISO_2DIGIT IN (${this.getCountryString()})`
+            where: `Name IN (${this.getCountryString(allCountries)})`
           }}
           styles={[{
-            polygonOptions: {
-              fillColor: '#FF0000',
-              fillOpacity: 0.2
-            }
+            polygonOptions: this.state.teams[0].polygonOptions
           }, {
-            where: `ISO_2DIGIT IN (${this.getCountryString(this.state.teams[1].countries)})`,
-            polygonOptions: {
-              fillColor: '#0000FF',
-              fillOpacity: 0.2
-            }
+            where: `Name IN (${this.getCountryString(this.getCountriesInTeam(1))})`,
+            polygonOptions: this.state.teams[1].polygonOptions
           }]}
           clickable={false}
           suppressInfoWindows={true}
@@ -49,35 +50,50 @@ class HighlightLayer extends React.Component {
     );
   }
 
-  getCountryString (countries) {
-    countries = countries || this.state.teams.map(team => team.countries).reduce((prev, curr) => {
+  getHqs () {
+    return this.state.teams.map(({ hq }) => hq);
+  }
+
+  getAllies () {
+    return this.state.teams.map(({ allies }) => allies).reduce((prev, curr) => {
       return prev.concat(curr);
     }, []);
+  }
+
+  getCountriesInTeam (index) {
+    return [this.state.teams[index].hq].concat(this.state.teams[index].allies);
+  }
+
+  getCountryString (countries) {
     return countries.map(country => `'${country}'`).join(',');
   }
 
   onMapClick (props, map, event, teamIndex) {
-    this.getIsoCode(event.latLng).then(isoCode => {
+    this.getCountryName(event.latLng).then(countryName => {
       const state = { ...this.state };
-      const currTeamIndex = this.state.teams.findIndex(team => {
-        return team.countries.indexOf(isoCode) > -1;
+      const hqs = this.getHqs();
+      if (hqs.indexOf(countryName) > -1) {
+        return;
+      }
+      const currTeamIndex = this.state.teams.findIndex((team, index) => {
+        return this.getCountriesInTeam(index).indexOf(countryName) > -1;
       });
 
       // Remove selected country if it already in a team
       if (currTeamIndex > -1) {
-        const currTeamCountries = state.teams[currTeamIndex].countries.filter(countryCode => countryCode !== isoCode);
-        state.teams[currTeamIndex].countries = currTeamCountries;
+        const currTeamCountries = state.teams[currTeamIndex].allies.filter(countryCode => countryCode !== countryName);
+        state.teams[currTeamIndex].allies = currTeamCountries;
       }
       // Add selected country to new team
       if (currTeamIndex !== teamIndex) {
-        const countries = [isoCode].concat(this.state.teams[teamIndex].countries);
-        state.teams[teamIndex].countries = countries;
+        const countries = [countryName].concat(this.state.teams[teamIndex].allies);
+        state.teams[teamIndex].allies = countries;
       }
       this.setState(state);
     });
   }
 
-  getIsoCode (latLng) {
+  getCountryName (latLng) {
     const wrappedGeocodePromise = config => {
       return new Promise((resolve, reject) => {
         const geocode = this.props.google.maps.Geocoder.prototype.geocode;
@@ -102,7 +118,7 @@ class HighlightLayer extends React.Component {
       if (!country) {
         throw new Error('Cant find country');
       }
-      return country.address_components[0].short_name;
+      return country.address_components[0].long_name;
     });
   }
 }
