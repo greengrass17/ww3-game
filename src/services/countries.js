@@ -1,15 +1,17 @@
 import { get } from './http';
 
-const baseUrl = '/country';
+const PORT = '49160';
+const BASE_URL = '/country';
+const getCountries = get(PORT);
 
 export const getRandomHq = () => {
-  return get(`${baseUrl}/?specials=HQ&ipp=1`);
+  return getCountries(`${BASE_URL}/?specials=HQ&ipp=1`);
 };
 
 export const getRandomAllies = () => {
-  return get(`${baseUrl}/?specials=Ally&ipp=5`);
+  return getCountries(`${BASE_URL}/?specials=Ally&ipp=5`);
 };
 
 export const search = (keyword) => {
-  return get(`${baseUrl}/search?keyword=${keyword}&field=Name`);
+  return getCountries(`${BASE_URL}/search?keyword=${keyword}&field=Name`);
 };

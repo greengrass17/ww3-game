@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import CountryCard from './Cards/Country.jsx';
 import { getRandomHq, getRandomAllies } from 'services/countries';
 import { Table, TableHeader, TableHeaderColumn, TableRow, TableBody, TableRowColumn } from 'material-ui/Table';
+import { getAdvantageCards, getEventCards } from '../services/cards';
 
 const style = {
   margin: 12
@@ -17,14 +18,26 @@ class CardDeck extends React.Component {
         <FlatButton
           style={style}
           primary={true}
-          label="Random an HQ"
+          label="Headquater"
           onClick={this.randomHq}
         />
         <FlatButton
           style={style}
           primary={true}
-          label="Random an ally"
+          label="5 allies"
           onClick={this.randomAlly}
+        />
+        <FlatButton
+          style={style}
+          primary={true}
+          label="10 advantage cards"
+          onClick={this.randomAdvCards}
+        />
+        <FlatButton
+          style={style}
+          primary={true}
+          label="5 event cards"
+          onClick={this.randomEveCards}
         />
       </div>
     );
@@ -68,6 +81,66 @@ class CardDeck extends React.Component {
                   <TableRowColumn>{country.Logistic}</TableRowColumn>
                   <TableRowColumn>{country.ScaleOfBattle}</TableRowColumn>
                   <TableRowColumn>{country.BattlePrice}</TableRowColumn>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )
+      });
+    });
+  }
+
+  randomEveCards = () => {
+    getEventCards(5).then(cards => {
+      this.context.showCard({
+        title: 'Event cards',
+        text: (
+          <Table selectable={false}>
+            <TableHeader>
+              <TableRow>
+                <TableHeaderColumn>Card Name</TableHeaderColumn>
+                <TableHeaderColumn>Text</TableHeaderColumn>
+                <TableHeaderColumn>Effect</TableHeaderColumn>
+                <TableHeaderColumn>Use condition</TableHeaderColumn>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {cards.map(({ CardName, CardText, CardEffect, CardCondition }) => (
+                <TableRow>
+                  <TableRowColumn>{CardName}</TableRowColumn>
+                  <TableRowColumn>{CardText}</TableRowColumn>
+                  <TableRowColumn>{CardEffect}</TableRowColumn>
+                  <TableRowColumn>{CardCondition}</TableRowColumn>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )
+      });
+    });
+  }
+
+  randomAdvCards = () => {
+    getAdvantageCards(10).then(cards => {
+      this.context.showCard({
+        title: 'Advantage cards',
+        text: (
+          <Table selectable={false}>
+            <TableHeader>
+              <TableRow>
+                <TableHeaderColumn>Card Name</TableHeaderColumn>
+                <TableHeaderColumn>Text</TableHeaderColumn>
+                <TableHeaderColumn>Effect</TableHeaderColumn>
+                <TableHeaderColumn>Use condition</TableHeaderColumn>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {cards.map(({ CardName, CardText, CardEffect, CardCondition }) => (
+                <TableRow>
+                  <TableRowColumn>{CardName}</TableRowColumn>
+                  <TableRowColumn>{CardText}</TableRowColumn>
+                  <TableRowColumn>{CardEffect}</TableRowColumn>
+                  <TableRowColumn>{CardCondition}</TableRowColumn>
                 </TableRow>
               ))}
             </TableBody>
