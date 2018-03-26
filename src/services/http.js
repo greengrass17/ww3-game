@@ -1,7 +1,7 @@
-const URL = 'http://174.138.10.57:49160';
+const URL = 'http://www.ww3ga.me';
 
-export const get = (path) => {
-  return fetch(URL + path).then(response => {
+export const get = port => path => {
+  return fetch(URL + ':' + port + path).then(response => {
     return response.json();
   }).catch(err => {
     console.log(err);
