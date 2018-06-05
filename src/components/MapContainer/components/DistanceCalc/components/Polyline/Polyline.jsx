@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { wrappedPromise } from 'services/utils';
+import wrappedPromise from 'utils/wrappedPromise';
 
 class Polyline extends React.Component {
   render () {

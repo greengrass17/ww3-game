@@ -19,35 +19,65 @@ module.exports = {
     rules: [
       {
         enforce: 'pre',
-        test: /\.(js|jsx)$/,
+        test: /\.js(x)?$/i,
         exclude: [/node_modules/, /sdk/],
         use: [
           'eslint-loader'
         ]
       },
       {
-        test: /\.(js|jsx)$/,
+        test: /\.js(x)?$/i,
         use: {
           loader: 'babel-loader',
           options: {
             presets: ['react', 'env'],
             plugins: [
               'transform-object-rest-spread',
-              'transform-class-properties',
-              ["module-resolver", {
-                "alias": {
-                  "services": path.resolve(__dirname, "src/services/"),
-                  "keys": path.resolve(__dirname, "src/keys"),
-                  "config": path.resolve(__dirname, "src/config"),
-                  "components": path.resolve(__dirname, "src/components")
-                }
-              }]
+              'transform-class-properties'
             ]
           }
         },
         exclude: [/node_modules/]
+      },
+      {
+        test: /\.scss$/i,
+        use: [
+          {
+            loader: 'style-loader'
+          },
+          {
+            loader: 'css-loader'
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              sourceMap: true,
+              plugins: [
+                require('autoprefixer')
+              ]
+            }
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true
+            }
+          }
+        ]
       }
     ]
+  },
+
+  resolve: {
+    extensions: ['.js', '.json', '.jsx'],
+
+    alias: {
+      "services": path.resolve(__dirname, "src/services/"),
+      "views": path.resolve(__dirname, "src/views"),
+      "config": path.resolve(__dirname, "src/config"),
+      "components": path.resolve(__dirname, "src/components"),
+      "utils": path.resolve(__dirname, "src/utils")
+    }
   },
 
   plugins: [

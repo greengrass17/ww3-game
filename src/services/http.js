@@ -1,4 +1,4 @@
-const URL = 'http://www.ww3ga.me';
+const URL = 'http://ww3ga.me';
 
 export const get = port => path => {
   return fetch(URL + ':' + port + path).then(response => {

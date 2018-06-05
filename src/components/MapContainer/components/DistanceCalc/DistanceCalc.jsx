@@ -1,8 +1,9 @@
 import React from 'react';
 import { Marker } from 'google-maps-react';
 
-import { isEmpty } from 'services/utils';
-import Polyline from './Polyline.jsx';
+import isEmpty from 'utils/isEmpty';
+import Polyline from './components/Polyline';
+import { rulerModeClickStrream } from 'services/map';
 
 class DistanceCalc extends React.Component {
   state = {
@@ -11,6 +12,10 @@ class DistanceCalc extends React.Component {
     path: [],
     distance: 0
   };
+
+  componentDidMount () {
+    rulerModeClickStrream.onValue(this.onMapClick);
+  }
 
   render () {
     return (
@@ -30,9 +35,6 @@ class DistanceCalc extends React.Component {
             <Marker
               {...this.props}
               position={this.getMidpoint(this.state.path)}
-              ref={node => {
-                this.midPointMarker = node;
-              }}
               label={{
                 fontSize: '16px',
                 fontWeight: '700',
@@ -54,7 +56,7 @@ class DistanceCalc extends React.Component {
     );
   }
 
-  onMapClick = (props, map, event) => {
+  onMapClick = ({ event }) => {
     if (!isEmpty(this.state.root) && !isEmpty(this.state.target)) {
       this.setState({
         root: {},
