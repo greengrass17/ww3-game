@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card, CardTitle, CardText, CardActions } from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
+import { Card, CardTitle, CardText, CardActions } from '@material-ui/core/Card';
+import FlatButton from '@material-ui/core/FlatButton';
 import PropTypes from 'prop-types';
 
 const cardStyle = {

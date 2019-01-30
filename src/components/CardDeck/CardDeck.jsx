@@ -17,10 +17,10 @@ class CardDeck extends React.Component {
   render () {
     return (
       <div>
-        <div>{enums[`card.${this.props.type}.title`]}</div>
+        <strong>{enums[`card.${this.props.type}.title`]}</strong>
         <div>
           {this.state.cards.map(card => (
-            <div>{card.CardName}</div>
+            <div key={card.CardName}>{card.CardName}</div>
           ))}
         </div>
       </div>

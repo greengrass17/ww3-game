@@ -1,17 +1,16 @@
 import { get } from 'services/http';
 
-const PORT = '8081';
-const BASE_URL = '/card';
-const fetchCard = get(PORT);
+const PATH = 'v1/games/5bca4fb6a43e99281a1f65d5/cards';
+const fetchCard = get;
 
 export const getAdvantageCards = noOfCards => {
-  return fetchCard(`${BASE_URL}/advantage?ipp=${noOfCards}`);
+  return fetchCard(`${PATH}/?ipp=${noOfCards}`);
 };
 
 export const getEventCards = noOfCards => {
-  return fetchCard(`${BASE_URL}/event?ipp=${noOfCards}`);
+  return fetchCard(`${PATH}/event?ipp=${noOfCards}`);
 };
 
 export const fetchCards = (type, ipp) => {
-  return fetchCard(`${BASE_URL}/${type}?ipp=${ipp}`);
+  return fetchCard(`${PATH}/?ipp=${ipp}`);
 };

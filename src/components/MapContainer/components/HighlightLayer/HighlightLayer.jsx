@@ -2,22 +2,27 @@ import React from 'react';
 
 import FusionTablesLayer from './components/FusionTablesLayer';
 import { selectModeClickStream } from 'services/map';
-import teams from 'services/teams';
 import { selectCountry, countriesStream, localSearch } from 'services/teams/countries';
 import { search } from 'services/countries';
+import { getTeams } from 'services/teams/teams';
 
 class HighlightLayer extends React.Component {
   state = {
     countries: [],
-    teams: teams.getTeams()
+    teams: [],
+    loading: true
   }
 
   componentDidMount () {
+    getTeams().then(teams => this.setState({ teams }));
     countriesStream.onValue(this.applyState);
     selectModeClickStream.onValue(this.onMapClick);
   }
 
   render () {
+    if (this.state.loading) {
+      return null;
+    }
     const allCountries = this.state.countries;
     if (!allCountries || !allCountries.length) {
       return null;

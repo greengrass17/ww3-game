@@ -1,60 +1,50 @@
 import React from 'react';
-import Drawer from 'material-ui/Drawer';
-import Divider from 'material-ui/Divider';
-import Checkbox from 'material-ui/Checkbox';
-import FlatButton from 'material-ui/FlatButton';
+import Drawer from '@material-ui/core/Drawer';
+import Button from '@material-ui/core/Button';
+import { withStyles } from '@material-ui/core';
 
 import CardDeck from 'components/CardDeck';
-import { changeMode } from 'services/map';
 import { start, getAllies } from 'services/game';
+import { fetchNextBattle } from '../../services/battles';
+
+import styles from './LeftPanel.styles';
 
 class LeftPanel extends React.Component {
   state = {
-    isRulerEnabled: false
-  }
+    battle: {
+      Country: {}
+    }
+  };
 
-  render () {
+  render() {
+    const { classes } = this.props;
     return (
-      <Drawer
-        open={true}
-        zDepth={1}
-        width={220}
-      >
+      <Drawer classes={classes} variant="permanent">
         <CardDeck type="advantage" teamId="1" />
-        <CardDeck type="event" teamId="1" />
-        <Divider />
-        <div style={{ padding: 12 }}>
-          <Checkbox
-            label="Measure Logistic"
-            primary={true}
-            onCheck={this.toggleRuler}
-          />
-        </div>
-        <FlatButton
-          label="Start"
-          onClick={this.onStart}
-        />
-        <FlatButton
-          label="Form Allies"
-          onClick={this.onFormAllies}
-        />
+        <Button onClick={this.onStart}>Start</Button>
+        <Button onClick={this.onFormAllies}>Form Allies</Button>
+        <Button onClick={this.fetchNextBattle}>Next Battle</Button>
+        <Button onClick={this.selectWinner}>Select Winner</Button>
       </Drawer>
     );
   }
 
-  toggleRuler = (event, isRulerEnabled) => {
-    this.setState({ isRulerEnabled });
-    changeMode(isRulerEnabled ? 'ruler' : 'select');
-  }
-
-  onFormAllies () {
+  onFormAllies() {
     getAllies();
   }
 
-  onStart () {
+  onStart() {
     start();
+  }
 
+  fetchNextBattle = () => {
+    fetchNextBattle().then(([battle]) => {
+      this.setState({ battle });
+    });
+  }
+
+  selectWinner = () => {
   }
 }
 
-export default LeftPanel;
+export default withStyles(styles)(LeftPanel);

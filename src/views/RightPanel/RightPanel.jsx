@@ -1,20 +1,21 @@
 import React from 'react';
-import { Drawer } from 'material-ui';
-import CountryInfo from 'components/CountryInfo';
+import { Drawer, withStyles } from '@material-ui/core';
+import styles from './RightPanel.styles';
+import TeamInfo from 'components/TeamInfo';
 
 class RightPanel extends React.Component {
   render () {
+    const { classes } = this.props;
     return (
       <Drawer
-        open={true}
-        zDepth={1}
-        openSecondary={true}
-        width={220}
+        classes={classes}
+        anchor="right"
+        variant="permanent"
       >
-        <CountryInfo/>
+        <TeamInfo />
       </Drawer>
     );
   }
 }
 
-export default RightPanel;
+export default withStyles(styles)(RightPanel);

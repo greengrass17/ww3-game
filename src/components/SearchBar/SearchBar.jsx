@@ -1,5 +1,5 @@
 import React from 'react';
-import AutoComplete from 'material-ui/AutoComplete';
+import AutoComplete from '@material-ui/core/AutoComplete';
 
 import { search } from 'services/countries';
 import { selectCountry } from 'services/teams/countries';

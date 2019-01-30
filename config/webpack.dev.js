@@ -11,16 +11,16 @@ module.exports = {
     './src/index.jsx',
   ],
   output: {
-    filename: 'main.bundle.js',
-    path: path.resolve(__dirname, 'build'),
+    filename: '[hash].bundle.js',
+    path: path.resolve(__dirname, '../build'),
   },
 
   module: {
     rules: [
       {
-        enforce: 'pre',
         test: /\.js(x)?$/i,
-        exclude: [/node_modules/, /sdk/],
+        enforce: 'pre',
+        include: [path.resolve(__dirname, '../src')],
         use: [
           'eslint-loader'
         ]
@@ -28,16 +28,9 @@ module.exports = {
       {
         test: /\.js(x)?$/i,
         use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['react', 'env'],
-            plugins: [
-              'transform-object-rest-spread',
-              'transform-class-properties'
-            ]
-          }
+          loader: 'babel-loader'
         },
-        exclude: [/node_modules/]
+        exclude: [path.resolve(__dirname, '../node_modules/')]
       },
       {
         test: /\.scss$/i,
@@ -71,29 +64,23 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.json', '.jsx'],
 
-    alias: {
-      "services": path.resolve(__dirname, "src/services/"),
-      "views": path.resolve(__dirname, "src/views"),
-      "config": path.resolve(__dirname, "src/config"),
-      "components": path.resolve(__dirname, "src/components"),
-      "utils": path.resolve(__dirname, "src/utils")
-    }
+    modules: ['node_modules', 'src']
   },
 
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': JSON.stringify('production')
+        'NODE_ENV': JSON.stringify('development')
       }
     }),
     new HtmlWebpackPlugin({
       inject: 'body',
       filename: 'index.html',
-      template: './index.html'
+      template: path.resolve(__dirname, '../index.html')
     }),
     new CopyWebpackPlugin([
       {
-        from: 'static/**'
+        from: '../static/**'
       }
     ], {
         copyUnmodified: true

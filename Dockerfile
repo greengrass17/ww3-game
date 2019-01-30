@@ -1,21 +1,20 @@
-FROM node:carbon
+FROM node:alpine AS Builder
 
-# Create app directory
 WORKDIR /usr/src/app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY package*.json ./
+RUN rm -rfv /usr/src/app/*
+COPY package.json yarn.lock ./
+RUN apk --no-cache add --virtual native-deps \
+  g++ gcc libgcc libstdc++ linux-headers make python && \
+  yarn global add node-gyp &&\
+  yarn install &&\
+  apk del native-deps
 
-RUN npm install
-# If you are building your code for production
-# RUN npm install --only=production
-
-# Bundle app source
 COPY . .
+RUN yarn build
 
-EXPOSE 8080
+FROM nginx:stable-alpine
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=Builder /usr/src/app/build /usr/share/nginx/html
 
-# Start the application.
-CMD npm start
+EXPOSE 80
