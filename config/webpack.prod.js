@@ -1,3 +1,5 @@
+const ImageminPlugin = require('imagemin-webpack-plugin').default;
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -5,14 +7,10 @@ const webpack = require('webpack');
 
 module.exports = {
   devtool: 'inline-source-map',
-  entry: [
-    'babel-polyfill',
-    'whatwg-fetch',
-    './src/index.jsx',
-  ],
+  entry: ['babel-polyfill', 'whatwg-fetch', './src/index.jsx'],
   output: {
     filename: '[hash].bundle.js',
-    path: path.resolve(__dirname, '../build'),
+    path: path.resolve(__dirname, '../build')
   },
 
   module: {
@@ -21,9 +19,7 @@ module.exports = {
         test: /\.js(x)?$/i,
         enforce: 'pre',
         include: [path.resolve(__dirname, '../src')],
-        use: [
-          'eslint-loader'
-        ]
+        use: ['eslint-loader']
       },
       {
         test: /\.js(x)?$/i,
@@ -52,9 +48,7 @@ module.exports = {
             loader: 'postcss-loader',
             options: {
               sourceMap: true,
-              plugins: [
-                require('autoprefixer')
-              ]
+              plugins: [require('autoprefixer')]
             }
           },
           {
@@ -69,7 +63,7 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['.js', '.json', '.jsx'],
+    extensions: ['.js', '.json', '.jsx', '.scss'],
 
     modules: ['node_modules', 'src']
   },
@@ -77,20 +71,49 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': JSON.stringify('development')
+        NODE_ENV: JSON.stringify('production')
       }
     }),
     new HtmlWebpackPlugin({
-      inject: 'body',
+      inject: true,
       filename: 'index.html',
-      template: path.resolve(__dirname, '../index.html')
-    }),
-    new CopyWebpackPlugin([
-      {
-        from: 'static/'
+      template: path.resolve(__dirname, '../index.html'),
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeRedundantAttributes: true,
+        useShortDoctype: true,
+        removeEmptyAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        keepClosingSlash: true,
+        minifyJS: true,
+        minifyCSS: true,
+        minifyURLs: true
       }
-    ], {
+    }),
+    new CopyWebpackPlugin(
+      [
+        {
+          from: 'static/'
+        }
+      ],
+      {
         copyUnmodified: true
-      })
+      }
+    ),
+    new ImageminPlugin({
+      test: /\.(jpe?g|png|gif)$/i
+    }),
+    new ExtractTextPlugin({
+      filename: '[contenthash].bundle.css'
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false
+      },
+      output: {
+        comments: false
+      }
+    })
   ]
 };
